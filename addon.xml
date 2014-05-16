@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.lastviewed" name="Last viewed" version="2.1.1" provider-name="AddonScriptorDE">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="de">Zuletzt gesehene</summary>
+        <summary lang="en">last viewed</summary>
+        <language>de</language>
+        <description lang="de">Liste mit den zuletzt gesehenen Videos</description>
+        <description lang="en">Liste mit den zuletzt gesehenen Videos</description>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+        <source>https://github.com/nix</source>
+        <email>keine</email>
+        <website>keine</website>
+    </extension>
+</addon>
