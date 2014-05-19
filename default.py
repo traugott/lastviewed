@@ -23,10 +23,7 @@ import xbmc
 addon_handle = int(sys.argv[1])
 
 try:
-#    response = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "JSONRPC.Introspect", "id": 1 }')
-#    f = open("D:\\rcp.txt", "w")
-#    f.write(response)
-#    f.close()
+    response = ""
     exec("response = "+xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1 }'))
     result = response["result"]
     if (len(result) > 0):
