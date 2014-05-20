@@ -1,4 +1,4 @@
-REMOTE_DBG = True 
+REMOTE_DBG = False 
 
 import sys
 
@@ -18,27 +18,18 @@ if REMOTE_DBG:
         
 import xbmcplugin
 import xbmcgui
-import xbmc
+import viewdb
+import xbmcinteg
+
+xbmcinteg.loadDb()
 
 addon_handle = int(sys.argv[1])
 
-try:
-    response = ""
-    exec("response = "+xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1 }'))
-    result = response["result"]
-    if (len(result) > 0):
-        if "video" == result[0]["type"]:
-            response = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Player.GetItem", "id": '+str(result[0]["playerid"])+', "params" : {"playerid":1,"properties":["lastplayed","file"]} }')
-    
-            print response
-except Exception as inst:
-    print type(inst)
-
-
 xbmcplugin.setContent(addon_handle, 'movies')
 
-url = 'http://localhost/some_video.mkv'
-li = xbmcgui.ListItem('My First Video!', iconImage='DefaultVideo.png')
-xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+l = viewdb.db.getOrderedLastViewedList()
+for t in l:
+    li = xbmcgui.ListItem(t[0], iconImage='DefaultVideo.png')
+    xbmcplugin.addDirectoryItem(addon_handle, t[1], li)
 
 xbmcplugin.endOfDirectory(addon_handle)

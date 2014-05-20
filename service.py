@@ -4,7 +4,7 @@ Created on 17.05.2014
 @author: blicrain
 '''
 
-REMOTE_DBG = True 
+REMOTE_DBG = False 
 
 import sys
 
@@ -23,16 +23,12 @@ if REMOTE_DBG:
 
         
 import time
-import io
 import viewdb
 import xbmcinteg
 
-try:
-    configFile = io.open("special://home/lastviewed/db")
-    lines = file.readlines()
-    viewdb.load(lines)
-except:
-    pass
+xbmcinteg.loadDb()
+
+viewdb.db.setOnUpdate(lambda :viewdb.save())
     
 while True:
     try:

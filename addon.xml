@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.lastviewed" name="Last viewed" version="2.1.1" provider-name="AddonScriptorDE">
+<addon id="plugin.video.lastviewed" name="Last viewed" version="2.1.1" provider-name="Kruemel">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
@@ -8,15 +8,6 @@
     </extension>
     <extension point="xbmc.service" library="service.py" start="startup">
         <platform>all</platform>
-        <summary lang="de">Zuletzt gesehene</summary>
-        <summary lang="en">last viewed</summary>
-        <language>de</language>
-        <description lang="de">Servic fuer Liste mit den zuletzt gesehenen Videos</description>
-        <description lang="en">Service fuer Liste mit den zuletzt gesehenen Videos</description>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-        <source>https://github.com/nix</source>
-        <email>keine</email>
-        <website>keine</website>
     </extension>
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
@@ -24,7 +15,7 @@
         <summary lang="en">last viewed</summary>
         <language>de</language>
         <description lang="de">Liste mit den zuletzt gesehenen Videos</description>
-        <description lang="en">Liste mit den zuletzt gesehenen Videos</description>
+        <description lang="en">List with the last viewed videos</description>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
         <source>https://github.com/nix</source>
         <email>keine</email>

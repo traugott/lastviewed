@@ -44,7 +44,7 @@ class DB():
         
         repl = "DB(dictionary={"
         for entry in self._dictionary.keys():
-            repl = repl + "'" + entry + "':" + str(self._dictionary[entry])+","
+            repl = repl + "r'" + entry + "':(r'" + self._dictionary[entry][0]+"',r'"+self._dictionary[entry][1]+"'),"
         if (len(self._dictionary.keys()) > 0):
             repl = repl[:-1]
         repl += "})"
@@ -63,6 +63,15 @@ class DB():
             self._dictionary[filename]=(lastviewed, label)
             self._onUpdate()
             return True
+    
+    def getOrderedLastViewedList(self):
+        """ Return [(label, filename, lastviewed)*], ordered by lastviewed-date"""
+        returnList = []
+        for filename in self._dictionary.keys():
+            t = self._dictionary[filename]
+            returnList.append((t[1], filename, t[0]))
+        returnList = sorted(returnList, key=lambda x:x[2], reverse=True)
+        return returnList
 
 
 db = DB()
@@ -74,3 +83,15 @@ def load(configLines):
         exec("global db\ndb="+configLines[1])
     else:
         return
+
+def save():
+    try:
+        import os, xbmcvfs
+        
+        configFile = xbmcvfs.File("special://home/lastviewed_db", "w")
+        configFile.write("V1"+os.linesep)
+        configFile.write(str(db)+os.linesep)
+        configFile.close()
+    except Exception as e:
+        print e
+    
