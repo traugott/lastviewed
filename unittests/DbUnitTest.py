@@ -26,6 +26,15 @@ class DbUnitTest(unittest.TestCase):
         exec("db = viewdb."+onDisk)
         self.assertEquals("DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})", str(db).replace("', '", "','"))
         
+    def testPeristenceWithSpecialChars(self):
+        db = viewdb.DB()
+        db.add("fi'le", "vor'nach", "la'bel")
+        self.assertEquals(r"DB(dictionary={r'fi\"le':(r'vor\"nach',r'la\"bel')})", str(db).replace("', '", "','"))
+        
+        onDisk = str(db)
+        exec("db = viewdb."+onDisk)
+        self.assertEquals(r"DB(dictionary={r'fi\"le':(r'vor\"nach',r'la\"bel')})", str(db).replace("', '", "','"))
+        
     def testLoad(self):
         viewdb.load(["V1","DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})"])
         self.assertEquals("DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})", str(viewdb.db).replace("', '", "','"))

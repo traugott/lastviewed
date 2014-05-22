@@ -38,13 +38,16 @@ class DB():
         """ Sets the onUpdate listener. gets called if there is an update of the db. Used to save the db to disk """
         
         self._onUpdate = onUpdate
+    
+    def __quote(self, str):
+        return str.replace("'", "\\\"")
         
     def __str__(self):
         """ Returns a string which can be executed to restore the DB. Used to persist this object"""
         
         repl = "DB(dictionary={"
         for entry in self._dictionary.keys():
-            repl = repl + "r'" + entry + "':(r'" + self._dictionary[entry][0]+"',r'"+self._dictionary[entry][1]+"'),"
+            repl = repl + "r'" + self.__quote(entry) + "':(r'" + self.__quote(self._dictionary[entry][0])+"',r'"+self.__quote(self._dictionary[entry][1])+"'),"
         if (len(self._dictionary.keys()) > 0):
             repl = repl[:-1]
         repl += "})"
