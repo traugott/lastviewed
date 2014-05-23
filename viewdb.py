@@ -39,19 +39,22 @@ class DB():
         
         self._onUpdate = onUpdate
     
-    def __quote(self, str):
-        return str.replace("'", "\\\"")
+    def __quote(self, text):
+        import urllib
+        return urllib.quote(text)
+    
+    def __unquote(self, text):
+        import urllib
+        return urllib.unquote(text)
         
     def __str__(self):
         """ Returns a string which can be executed to restore the DB. Used to persist this object"""
         
-        repl = "DB(dictionary={"
+        arr = []
         for entry in self._dictionary.keys():
-            repl = repl + "r'" + self.__quote(entry) + "':(r'" + self.__quote(self._dictionary[entry][0])+"',r'"+self.__quote(self._dictionary[entry][1])+"'),"
-        if (len(self._dictionary.keys()) > 0):
-            repl = repl[:-1]
-        repl += "})"
-        return repl
+            t = (self.__quote(entry), self.__quote(str(self._dictionary[entry][0])),self.__quote(self._dictionary[entry][1]))
+            arr.append(t)
+        return str(arr)
     
     def add(self, filename, lastviewed, label):
         """ Adds an Entry to this db. Returns True if db has changed, otherwise False"""
@@ -68,7 +71,7 @@ class DB():
             return True
     
     def getOrderedLastViewedList(self):
-        """ Return [(label, filename, lastviewed)*], ordered by lastviewed-date"""
+        """ Return [(label:string, filename:string, lastviewed:int)*], ordered by lastviewed-date"""
         returnList = []
         for filename in self._dictionary.keys():
             t = self._dictionary[filename]
@@ -76,25 +79,37 @@ class DB():
         returnList = sorted(returnList, key=lambda x:x[2], reverse=True)
         return returnList
 
+    def load(self, configLines):
+        """ Loads the db from the config lines 
+        First line is the version
+        "V1" - not supported anymore
+        "V2" - next line is an array in the following form [(<file>,<lastviewed>,<label>)*]
+        """
+        if len(configLines) == 0:
+            return
+        if configLines[0] == "V1":
+            global db  # Sorry, old format is not supportable anymore
+            db = DB()
+        elif configLines[0] == "V2":
+            arr=[]
+            exec("arr="+configLines[1])
+            self._dictionary.clear()
+            for t in arr:
+                t = (self.__unquote(t[0]),self.__unquote(t[1]),self.__unquote(t[2]))
+                self.add(*t)
 
+    def save(self):
+        try:
+            import os, xbmcvfs
+            
+            configFile = xbmcvfs.File("special://home/lastviewed_db", "w")
+            configFile.write("V2"+os.linesep)
+            configFile.write(str(db)+os.linesep)
+            configFile.close()
+        except Exception as e:
+            print e
+
+    def clear(self):
+        self._dictionary.clear()
 db = DB()
 
-def load(configLines):
-    if len(configLines) == 0:
-        return
-    if configLines[0] == "V1":
-        exec("global db\ndb="+configLines[1])
-    else:
-        return
-
-def save():
-    try:
-        import os, xbmcvfs
-        
-        configFile = xbmcvfs.File("special://home/lastviewed_db", "w")
-        configFile.write("V1"+os.linesep)
-        configFile.write(str(db)+os.linesep)
-        configFile.close()
-    except Exception as e:
-        print e
-    

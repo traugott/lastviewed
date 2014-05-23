@@ -22,20 +22,14 @@ if REMOTE_DBG:
         sys.exit(1)
 
         
-import time
 import viewdb
 import xbmcinteg
 
 xbmcinteg.loadDb()
 
-viewdb.db.setOnUpdate(lambda :viewdb.save())
+viewdb.db.setOnUpdate(lambda :viewdb.db.save())
     
 while True:
-    try:
-        t = xbmcinteg.getPlaying()
-        if t != None:
-            filename, label, lastviewed = t
-            viewdb.db.add(filename, lastviewed, label)
-    except Exception as inst:
-        print type(inst)
+    import service_impl,time
+    service_impl.doService(xbmcinteg.getPlaying)
     time.sleep(5)

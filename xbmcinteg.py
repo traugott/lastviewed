@@ -12,7 +12,7 @@ import viewdb
 def getPlaying():
     """ No input params
     
-    Returns a tuple (file,label,lastplayed)
+    Returns a tuple (file,label)
     """
     
     try:
@@ -26,8 +26,7 @@ def getPlaying():
                 
                 filename = result["result"]["item"]["file"]
                 label = result["result"]["item"]["label"]
-                lastplayed = result["result"]["item"]["lastplayed"]
-                return (filename,label,lastplayed)
+                return (filename,label)
         return None
                 
     except Exception as inst:
@@ -41,14 +40,14 @@ def loadDb():
         stringWithLines = ""
         stringWithLines = configFile.read()
         lines = stringWithLines.split(os.linesep)
-        viewdb.load(lines)
+        viewdb.db.load(lines)
         configFile.close()
     except:
         pass
 
 def saveDb():
     try:
-        viewdb.save()
+        viewdb.db.save()
     except:
         pass
         

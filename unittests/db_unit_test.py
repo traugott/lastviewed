@@ -20,24 +20,32 @@ class DbUnitTest(unittest.TestCase):
         db = viewdb.DB()
         db.add("file", "lastviewed", "label")
         db.add("file2", "lastviewed2", "label2")
-        self.assertEquals("DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})", str(db).replace("', '", "','"))
+        self.assertEquals("[('file2', 'lastviewed2', 'label2'), ('file', 'lastviewed', 'label')]", str(db))
         
         onDisk = str(db)
-        exec("db = viewdb."+onDisk)
-        self.assertEquals("DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})", str(db).replace("', '", "','"))
+        db.clear()
+        db.load(["V2", onDisk])
+        self.assertEquals("[('file2', 'lastviewed2', 'label2'), ('file', 'lastviewed', 'label')]", str(db))
         
     def testPeristenceWithSpecialChars(self):
         db = viewdb.DB()
         db.add("fi'le", "vor'nach", "la'bel")
-        self.assertEquals(r"DB(dictionary={r'fi\"le':(r'vor\"nach',r'la\"bel')})", str(db).replace("', '", "','"))
+        self.assertEquals(r"[('fi%27le', 'vor%27nach', 'la%27bel')]", str(db))
         
         onDisk = str(db)
-        exec("db = viewdb."+onDisk)
-        self.assertEquals(r"DB(dictionary={r'fi\"le':(r'vor\"nach',r'la\"bel')})", str(db).replace("', '", "','"))
+        db.clear()
+        db.load(["V2", onDisk])
+
+        self.assertEquals([("la'bel", "fi'le", "vor'nach")],db.getOrderedLastViewedList())
+        self.assertEquals(r"[('fi%27le', 'vor%27nach', 'la%27bel')]", str(db))
+        
+    def testLoadV1(self):
+        viewdb.db.load(["V1","DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})"])
+        self.assertEquals("[]", str(viewdb.db).replace("', '", "','"))
         
     def testLoad(self):
-        viewdb.load(["V1","DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})"])
-        self.assertEquals("DB(dictionary={r'file2':(r'lastviewed2',r'label2'),r'file':(r'lastviewed',r'label')})", str(viewdb.db).replace("', '", "','"))
+        viewdb.db.load(["V2","[(r'file2',r'lastviewed2',r'label2'),(r'file',r'lastviewed',r'label')]"])
+        self.assertEquals("[('file2','lastviewed2','label2'), ('file','lastviewed','label')]", str(viewdb.db).replace("', '", "','"))
         
     def testAddingEntries(self):
         db = viewdb.DB()
